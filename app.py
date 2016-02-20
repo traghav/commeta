@@ -22,7 +22,10 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configur
 def home():
     """Render website's home page."""
     return render_template('chat.html')
-
+@app.route('/login')
+def login():
+    form = LoginForm(request.form)
+    return render_template('forms/login.html', form=form)
 
 @app.route('/about/')
 def about():
