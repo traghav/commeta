@@ -24,8 +24,8 @@ def home():
     return render_template('chat.html')
 @app.route('/login')
 def login():
-    form = LoginForm(request.form)
-    return render_template('login.html', form=form)
+    
+    return render_template('login.html')
 
 @app.route('/about/')
 def about():
