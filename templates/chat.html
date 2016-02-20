@@ -25,11 +25,48 @@
         });
  
         function refreshMessages(message) {
-            $(".media-list").append('<li class="media"><div class="media-body"><div class="media"><div class="media-body">'
-                + message.message + '<br/><small class="text-muted">' + message.author + ' | ' + message.createDate + '</small><hr/></div></div></div></li>');
-            document.body.append('<li class="media"><div class="media-body"><div class="media"><div class="media-body">'
-                + "adf"+ '<br/><small class="text-muted">' + "daft punk" + ' | ' + message.createDate + '</small><hr/></div></div></div></li>');
+            refreshm();
         }
+        function refreshm() {
+                str1='<li class="media"><div class="media-body"><div class="media"><div class="media-body">';
+                str2='<br/><small class="text-muted">';
+                str3='</small><hr/></div></div></div></li>';
+                res="";
+                var comment='';
+                var author='';
+                var ts='';
+                myFirebaseRef.on("value", function(snapshot) {
+
+                ans=snapshot.val() // Alerts "San Francisco"
+                });
+                for (var key in ans) {
+                // skip loop if the property is from prototype
+                if (!ans.hasOwnProperty(key)) continue;
+                //console.log(obj[author]);
+                 var obj = ans[key];
+                 
+                    for (var prop in obj) {
+                    // skip loop if the property is from prototype
+                        if(!obj.hasOwnProperty(prop)) continue;
+
+                        // your code
+                        comment=obj['comment'];
+                        author=obj['author'];
+                        ts=obj['timestamp'];
+                        
+
+
+
+                        
+                    }
+                    res+=str1+comment+str2+author+' on '+ts+str3;
+                }
+                $(".media-list").html(res);
+                
+
+
+            }
+        
  
         $(function(){
  
@@ -48,6 +85,9 @@
                     }
                 });
             }
+            window.setInterval(function(){
+             refreshm();
+                }, 1000);
  
             function sendMessage() {
                 $container = $('.media-list');
@@ -85,7 +125,7 @@
                         
                     }
                 }
-                refreshm();
+                
                 
                 $('.fixed-panel').animate({scrollTop: $('.fixed-panel').prop("scrollHeight")}, 500);
             }
@@ -136,12 +176,15 @@
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <style type="text/css">
         .fixed-panel {
-            min-height: 500px;
-            max-height: 500px;
+            
+            height:80vh;
             overflow: scroll;
         }
         .media-list {
             overflow: scroll;
+        }
+        .col-md-12 {
+
         }
 
     </style>
@@ -149,7 +192,7 @@
 <body>
 <div class="container">
     <div class="row " style="padding-top:40px;">
-        <h3 class="text-center">Realtime Chat Application with Flask, SocketIO and Firebase</h3>
+        <h3 class="text-center">Commeta, Internet's comment place.</h3>
         <br/><br/>
  
         <div class="col-md-12">
