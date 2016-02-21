@@ -209,7 +209,8 @@
                     for (var prop in obj) {
                     // skip loop if the property is from prototype
                         if(!obj.hasOwnProperty(prop)) continue;
-
+                        var d = new Date();
+                        var n=String(d);
                         // your code
                         comment=obj['comment'];
                         author=obj['author'];
