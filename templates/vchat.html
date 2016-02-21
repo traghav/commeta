@@ -82,26 +82,24 @@
  
         $(function(){
             console.log();
-            if (typeof $.cookie("realtime-chat-nickname") === 'undefined') {
-                window.location = "/login"
-            } else {
-                $("#sendMessage").on("click", function() {
-                    if($("#messageText").val()=="")
+            
+            $("#sendMessage").on("click", function() {
+                if($("#messageText").val()=="")
+                    alert( "Empty Comment field" );
+                else
+                    sendMessage()
+            });
+ 
+            $('#messageText').keyup(function(e){
+                if(e.keyCode == 13)
+                {   if($("#messageText").val()=="")
                         alert( "Empty Comment field" );
                     else
-                        sendMessage()
-                });
- 
-                $('#messageText').keyup(function(e){
-                    if(e.keyCode == 13)
-                    {   if($("#messageText").val()=="")
-                            alert( "Empty Comment field" );
-                        else
-                            sendMessage();
-                        
-                    }
-                });
-            }
+                        sendMessage();
+                    
+                }
+            });
+        
             window.setInterval(function(){
              refreshm();
                 }, 1000);
@@ -110,7 +108,7 @@
                 $container = $('.media-list');
                 $container[0].scrollTop = $container[0].scrollHeight;
                 var message = $("#messageText").val();
-                var author = $.cookie("realtime-chat-nickname");
+                var author = 'anonymous';
                 socket.emit('message', {data: {message: message, author: author}});
                 $("#messageText").val("");
                 $container.animate({ scrollTop: $container[0].scrollHeight }, "slow");

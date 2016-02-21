@@ -37,7 +37,10 @@ def send_text(star):
     return render_template("pchat.html", messages={'url':star})
     #return urllib.unquote(star).decode('utf8') 
     
-
+@app.route('/anonchat/<path:star>', methods=['GET'])
+def send_chatview(star):
+    return render_template("vchat.html", messages={'url':star})
+    #return urllib.unquote(star).decode('utf8') 
 
 ###
 # The functions below should be applicable to all Flask apps.
