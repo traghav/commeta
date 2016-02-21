@@ -32,9 +32,12 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-@app.route('/chat/<star>', methods=['GET'])
+@app.route('/chat/<path:star>', methods=['GET'])
 def send_text(star):
     return render_template("pchat.html", messages={'url':star})
+    #return urllib.unquote(star).decode('utf8') 
+    
+
 
 ###
 # The functions below should be applicable to all Flask apps.
