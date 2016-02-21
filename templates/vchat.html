@@ -114,7 +114,7 @@
                 $container.animate({ scrollTop: $container[0].scrollHeight }, "slow");
                 console.log(window.location.href);
                 var d = new Date();
-                var n=String(d);
+                var n=d.getTime();
                 console.log(d);
                 myFirebaseRef.push({
                   comment: message,
@@ -146,20 +146,23 @@
             }
             function timeDifference(current, previous) {
 
-                var msPerMinute = 60 * 1000;
+                var msPerMinute = 60 * 1000 * 2.1;
                 var msPerHour = msPerMinute * 60;
                 var msPerDay = msPerHour * 24;
                 var msPerMonth = msPerDay * 30;
                 var msPerYear = msPerDay * 365;
-
-                var elapsed = current - previous;
-                console.log(elapsed);
+                
+                var curr = new Date(previous);
+                
+                var elapsed = current.getTime()-curr.getTime();
+                
+                
                 if (elapsed < msPerMinute) {
-                     return Math.round(elapsed/1000) + ' seconds ago';   
+                     return 'less than a minute ago';   
                 }
 
                 else if (elapsed < msPerHour) {
-                     return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+                     return Math.ceil(elapsed/msPerMinute) + ' minutes ago';   
                 }
 
                 else if (elapsed < msPerDay ) {
@@ -218,7 +221,7 @@
                         
                     }
                     //res+=str1+strup+comment+strdown+str2+author+' | '+ts+str3;
-                    res+=str1+comment+str2+author+' on '+relative+str3;
+                    res+=str1+comment+str2+author+' | '+relative+str3;
 
                 }
                 $(".media-list").html(res);

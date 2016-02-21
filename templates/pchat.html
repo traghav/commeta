@@ -105,9 +105,46 @@
             window.setInterval(function(){
              refreshm();
                 }, 1000);
- 
+             function timeDifference(current, previous) {
+
+                var msPerMinute = 60 * 1000 * 2.1;
+                var msPerHour = msPerMinute * 60;
+                var msPerDay = msPerHour * 24;
+                var msPerMonth = msPerDay * 30;
+                var msPerYear = msPerDay * 365;
+                
+                var curr = new Date(previous);
+                
+                var elapsed = current.getTime()-curr.getTime();
+                
+                
+                if (elapsed < msPerMinute) {
+                     return 'less than a minute ago';   
+                }
+
+                else if (elapsed < msPerHour) {
+                     return Math.ceil(elapsed/msPerMinute) + ' minutes ago';   
+                }
+
+                else if (elapsed < msPerDay ) {
+                     return Math.round(elapsed/msPerHour ) + ' hours ago';   
+                }
+
+                else if (elapsed < msPerMonth) {
+                    return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+                }
+
+                else if (elapsed < msPerYear) {
+                    return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+                }
+
+                else {
+                    return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+                }
+            }
+            
             function sendMessage() {
-               
+
                 $container = $('.media-list');
                 $container[0].scrollTop = $container[0].scrollHeight;
                 var message = $("#messageText").val();
@@ -117,7 +154,7 @@
                 $container.animate({ scrollTop: $container[0].scrollHeight }, "slow");
                 console.log(window.location.href);
                 var d = new Date();
-                var n=String(d);
+                var n=d.getTime();
                 console.log(d);
                 myFirebaseRef.push({
                   comment: message,
@@ -177,13 +214,14 @@
                         comment=obj['comment'];
                         author=obj['author'];
                         ts=obj['timestamp'];
+                        relative=timeDifference(d,ts);
                         
 
 
 
                         
                     }
-                    res+=str1+strup+comment+strdown+str2+author+' | '+ts+str3;
+                    res+=str1+strup+comment+strdown+str2+author+' | '+relative+str3;
 
                 }
                 $(".media-list").html(res);
