@@ -11,15 +11,27 @@
     <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
     <script>
         var channel = "/chat";
- 
-        //var socket = io.connect('http://' + document.domain + ':' + location.port + channel);
         var ans='';
-        var myFirebaseRef = new Firebase("https://commeta.firebaseio.com/comments");
+        var socket = io.connect('https://' + document.domain + ':' + location.port + channel);
+        var mainurl='{{ messages['url'] }}';
+        String.prototype.hashCode = function(){
+            var hash = 0;
+            if (this.length == 0) return hash;
+            for (i = 0; i < this.length; i++) {
+                char = this.charCodeAt(i);
+                hash = ((hash<<5)-hash)+char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        console.log(mainurl.hashCode());
+        var myFirebaseRef = new Firebase("https://commeta.firebaseio.com/"+mainurl.hashCode());
  
         socket.on('connect', function() {
             socket.emit('my_connection', {data: 'I\'m connected!'});
         });
- 
+        
         socket.on("message", function (message) {
             refreshMessages(message);
         });
@@ -69,18 +81,23 @@
         
  
         $(function(){
-            trrhhihfvh
+            console.log();
             if (typeof $.cookie("realtime-chat-nickname") === 'undefined') {
                 window.location = "/login"
             } else {
                 $("#sendMessage").on("click", function() {
-                    sendMessage()
+                    if($("#messageText").val()=="")
+                        alert( "Empty Comment field" );
+                    else
+                        sendMessage()
                 });
  
                 $('#messageText').keyup(function(e){
                     if(e.keyCode == 13)
-                    {
-                        sendMessage();
+                    {   if($("#messageText").val()=="")
+                            alert( "Empty Comment field" );
+                        else
+                            sendMessage();
                         
                     }
                 });
@@ -177,7 +194,7 @@
     <style type="text/css">
         .fixed-panel {
             
-            height:80vh;
+            height:75vh;
             overflow: scroll;
         }
         .media-list {
@@ -192,7 +209,8 @@
 <body>
 <div class="container">
     <div class="row " style="padding-top:40px;">
-        <h3 class="text-center">Commeta, Internet's comment place.</h3>
+        <h3 class="text-center">Commeta, Internet's comment haven.</h3>
+        <h4 class="text-center">Welcome to the comment haven of {{ messages['url'] }}</h4>
         <br/><br/>
  
         <div class="col-md-12">
@@ -207,7 +225,7 @@
                 
                 <div class="panel-footer">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Enter Message" id="messageText" autofocus/>
+                        <input type="text" class="form-control" placeholder="Enter Comment"  id="messageText" autofocus/>
                                     <span class="input-group-btn">
                                         <button class="btn btn-info" type="button" id="sendMessage">SEND <span class="glyphicon glyphicon-send"></span></button>
                                     </span>
