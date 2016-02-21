@@ -144,6 +144,40 @@
                 
                 $('.fixed-panel').animate({scrollTop: $('.fixed-panel').prop("scrollHeight")}, 500);
             }
+            function timeDifference(current, previous) {
+
+                var msPerMinute = 60 * 1000;
+                var msPerHour = msPerMinute * 60;
+                var msPerDay = msPerHour * 24;
+                var msPerMonth = msPerDay * 30;
+                var msPerYear = msPerDay * 365;
+
+                var elapsed = current - previous;
+
+                if (elapsed < msPerMinute) {
+                     return Math.round(elapsed/1000) + ' seconds ago';   
+                }
+
+                else if (elapsed < msPerHour) {
+                     return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+                }
+
+                else if (elapsed < msPerDay ) {
+                     return Math.round(elapsed/msPerHour ) + ' hours ago';   
+                }
+
+                else if (elapsed < msPerMonth) {
+                    return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+                }
+
+                else if (elapsed < msPerYear) {
+                    return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+                }
+
+                else {
+                    return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+                }
+            }
             
             function refreshm() {
                 str1='<li class="media"><div class="media-body"><div class="media"><div class="media-body">';
@@ -171,9 +205,12 @@
                         if(!obj.hasOwnProperty(prop)) continue;
 
                         // your code
+                        var d = new Date();
+                        var n=String(d);
                         comment=obj['comment'];
                         author=obj['author'];
                         ts=obj['timestamp'];
+                        relative=timeDifference(n,ts);
                         
 
 
@@ -181,7 +218,7 @@
                         
                     }
                     //res+=str1+strup+comment+strdown+str2+author+' | '+ts+str3;
-                    res+=str1+comment+str2+author+' on '+ts+str3;
+                    res+=str1+comment+str2+author+' on '+relative+str3;
 
                 }
                 $(".media-list").html(res);
