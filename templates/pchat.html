@@ -107,6 +107,7 @@
                 }, 1000);
  
             function sendMessage() {
+               
                 $container = $('.media-list');
                 $container[0].scrollTop = $container[0].scrollHeight;
                 var message = $("#messageText").val();
@@ -165,7 +166,7 @@
                 for (var key in ans) {
                 // skip loop if the property is from prototype
                 if (!ans.hasOwnProperty(key)) continue;
-                //console.log(obj[author]);
+                
                  var obj = ans[key];
                  
                     for (var prop in obj) {
@@ -183,6 +184,7 @@
                         
                     }
                     res+=str1+strup+comment+strdown+str2+author+' | '+ts+str3;
+
                 }
                 $(".media-list").html(res);
                 
