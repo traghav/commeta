@@ -6,7 +6,7 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 
-import os
+import os, requests
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
@@ -41,6 +41,9 @@ def send_text(star):
 def send_chatview(star):
     return render_template("vchat.html", messages={'url':star})
     #return urllib.unquote(star).decode('utf8') 
+@app.route('/analytics/<path:star>', methods=['GET'])
+def sentiment_view(star):
+    return render_template("analytics.html", messages={'url':star})
 
 ###
 # The functions below should be applicable to all Flask apps.
