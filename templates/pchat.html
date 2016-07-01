@@ -12,7 +12,6 @@
     <script>
         var channel = "/chat";
         var ans='';
-        var socket = io.connect('https://' + document.domain + ':' + location.port + channel);
         var mainurl='{{ messages['url'] }}';
         String.prototype.hashCode = function(){
             var hash = 0;
@@ -97,7 +96,7 @@
                 });
             }
             window.setInterval(function(){
-             refreshm();
+             refreshm();//The hackiest solution ever. FIX IT FUTURE RAGHAV. 
                 }, 1000);
              function timeDifference(current, previous) {
 
@@ -254,7 +253,7 @@
         <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <strong><span class="glyphicon glyphicon-list"></span> Chat History</strong>
+                    <strong><span class="glyphicon glyphicon-list"></span> Comment History</strong>
                 </div>
                 <div class="panel-body fixed-panel">
                     <ul class="media-list">
