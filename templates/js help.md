@@ -1,3 +1,6 @@
+
+####Uh, scratchpad to figure out various combination for bookmarkelt and what works. 
+
 javascript:document.getElementsByTagName('body')%5B0%5D.appendChild(document.createElement('iframe')).setAttribute('src','https://www.mendeley.com/minified/bookmarklet.js');
 
 javascript:(function(){var d=document,e=d.getElementsByTagName('body')[0];e.append="<h2>324</h2>";console.log('something is happening')})();
