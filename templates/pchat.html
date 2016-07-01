@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+    <script>
+        var channel = "/chat";
+        var ans='';
+        var socket = io.connect('https://' + document.domain + ':' + location.port + channel);
+        var mainurl='{{ messages['url'] }}';
+        String.prototype.hashCode = function(){
+            var hash = 0;
+            if (this.length == 0) return hash;
+            for (i = 0; i < this.length; i++) {
+                char = this.charCodeAt(i);
+                hash = ((hash<<5)-hash)+char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        console.log(mainurl.hashCode());
+        var myFirebaseRef = new Firebase("https://commeta.firebaseio.com/"+mainurl.hashCode());
+ 
+        socket.on('connect', function() {
+            socket.emit('my_connection', {data: 'I\'m connected!'});
+        });
+        
+        socket.on("message", function (message) {
+            refreshMessages(message);
+        });
+ 
+        function refreshMessages(message) {
+            refreshm();
+        }
+        function refreshm() {
+                str1='<li class="media"><div class="media-body"><div class="media"><div class="media-body">';
+                str2='<br/><small class="text-muted">';
+                str3='</small><hr/></div></div></div></li>';
+                res="";
+                var comment='';
+                var author='';
+                var ts='';
+                myFirebaseRef.on("value", function(snapshot) {
+
+                ans=snapshot.val() // Alerts "San Francisco"
+                });
+                for (var key in ans) {
+                // skip loop if the property is from prototype
+                if (!ans.hasOwnProperty(key)) continue;
+                //console.log(obj[author]);
+                 var obj = ans[key];
+                 
+                    for (var prop in obj) {
+                    // skip loop if the property is from prototype
+                        if(!obj.hasOwnProperty(prop)) continue;
+
+                        // your code
+                        comment=obj['comment'];
+                        author=obj['author'];
+                        ts=obj['timestamp'];
+                        
+
+
+
+                        
+                    }
+                    res+=str1+comment+str2+author+' on '+ts+str3;
+                }
+                $(".media-list").html(res);
+                
+
+
+            }
+        
+ 
+        $(function(){
+            console.log();
+            if (typeof $.cookie("realtime-chat-nickname") === 'undefined') {
+                window.location = "/login"
+            } else {
+                $("#sendMessage").on("click", function() {
+                    if($("#messageText").val()=="")
+                        alert( "Empty Comment field" );
+                    else
+                        sendMessage()
+                });
+ 
+                $('#messageText').keyup(function(e){
+                    if(e.keyCode == 13)
+                    {   if($("#messageText").val()=="")
+                            alert( "Empty Comment field" );
+                        else
+                            sendMessage();
+                        
+                    }
+                });
+            }
+            window.setInterval(function(){
+             refreshm();
+                }, 1000);
+             function timeDifference(current, previous) {
+
+                var msPerMinute = 60 * 1000 * 2.1;
+                var msPerHour = msPerMinute * 60;
+                var msPerDay = msPerHour * 24;
+                var msPerMonth = msPerDay * 30;
+                var msPerYear = msPerDay * 365;
+                
+                var curr = new Date(previous);
+                
+                var elapsed = current.getTime()-curr.getTime();
+                
+                
+                if (elapsed < msPerMinute) {
+                     return 'less than a minute ago';   
+                }
+
+                else if (elapsed < msPerHour) {
+                     return Math.ceil(elapsed/msPerMinute) + ' minutes ago';   
+                }
+
+                else if (elapsed < msPerDay ) {
+                     return Math.round(elapsed/msPerHour ) + ' hours ago';   
+                }
+
+                else if (elapsed < msPerMonth) {
+                    return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+                }
+
+                else if (elapsed < msPerYear) {
+                    return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+                }
+
+                else {
+                    return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+                }
+            }
+            
+            function sendMessage() {
+
+                $container = $('.media-list');
+                $container[0].scrollTop = $container[0].scrollHeight;
+                var message = $("#messageText").val();
+                var author = $.cookie("realtime-chat-nickname");
+                socket.emit('message', {data: {message: message, author: author}});
+                $("#messageText").val("");
+                $container.animate({ scrollTop: $container[0].scrollHeight }, "slow");
+                console.log(window.location.href);
+                var d = new Date();
+                var n=d.getTime();
+                console.log(d);
+                myFirebaseRef.push({
+                  comment: message,
+                  timestamp:n,
+                  author: author,
+                  
+                });
+                
+                //console.log(ans);
+                for (var key in ans) {
+                // skip loop if the property is from prototype
+                if (!ans.hasOwnProperty(key)) continue;
+                //console.log(obj[author]);
+                 var obj = ans[key];
+                 
+                    for (var prop in obj) {
+                    // skip loop if the property is from prototype
+                        if(!obj.hasOwnProperty(prop)) continue;
+
+                        // your code
+                        //console.log(obj['comment']);
+
+                        
+                    }
+                }
+                
+                
+                $('.fixed-panel').animate({scrollTop: $('.fixed-panel').prop("scrollHeight")}, 500);
+            }
+            
+            function refreshm() {
+                str1='<li class="media"><div class="media-body"><div class="media"><div class="media-body">';
+                str2='<br/><small class="text-muted">';
+                str3='</small><hr/></div></div></div></li>';
+                strup='<small class="text-muted"><span class="glyphicon glyphicon-chevron-up"></span><br/></small>'
+                strdown='</br><small class="text-muted"><span class="glyphicon glyphicon-chevron-down"></span><br/></small>'
+
+                res="";
+                var comment='';
+                var author='';
+                var ts='';
+                myFirebaseRef.on("value", function(snapshot) {
+
+                ans=snapshot.val() // Alerts "San Francisco"
+                });
+                for (var key in ans) {
+                // skip loop if the property is from prototype
+                if (!ans.hasOwnProperty(key)) continue;
+                
+                 var obj = ans[key];
+                 
+                    for (var prop in obj) {
+                    // skip loop if the property is from prototype
+                        if(!obj.hasOwnProperty(prop)) continue;
+                        var d = new Date();
+                        var n=String(d);
+                        // your code
+                        comment=obj['comment'];
+                        author=obj['author'];
+                        ts=obj['timestamp'];
+                        relative=timeDifference(d,ts);
+                        
+
+
+
+                        
+                    }
+                    res+=str1+strup+comment+strdown+str2+author+' | '+relative+str3;
+
+                }
+                $(".media-list").html(res);
+                
+
+
+            }
+
+        })
+    </script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <style type="text/css">
+        .fixed-panel {
+            
+            height:75vh;
+            overflow: scroll;
+        }
+        .media-list {
+            overflow: scroll;
+        }
+        .col-md-12 {
+
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row " style="padding-top:40px;">
+        <h3 class="text-center">Commeta, Internet's comment haven.</h3>
+        <h4 class="text-center">Welcome to the comment haven of <a>{{ messages['url'] }}</a></h4>
+        <br/><br/>
+ 
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <strong><span class="glyphicon glyphicon-list"></span> Chat History</strong>
+                </div>
+                <div class="panel-body fixed-panel">
+                    <ul class="media-list">
+                    </ul>
+                </div>
+                
+                <div class="panel-footer">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Comment"  id="messageText" autofocus/>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info" type="button" id="sendMessage">SEND <span class="glyphicon glyphicon-send"></span></button>
+                                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
