@@ -1,11 +1,21 @@
+"""
+Flask Documentation:     http://flask.pocoo.org/docs/
+Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
+Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
+
+This file creates your application.
+"""
+
 import os, requests
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-
+<<<<<<< HEAD
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured') #And someday I will, promise.
-
+=======
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
 
 
 ###
@@ -35,9 +45,13 @@ def send_text(star):
 def send_chatview(star):
     return render_template("vchat.html", messages={'url':star})
     #return urllib.unquote(star).decode('utf8') 
+<<<<<<< HEAD
 
-
-
+=======
+@app.route('/analytics/<path:star>', methods=['GET'])
+def sentiment_view(star):
+    return render_template("analytics.html", messages={'url':star})
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
 
 ###
 # The functions below should be applicable to all Flask apps.

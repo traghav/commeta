@@ -12,7 +12,10 @@
     <script>
         var channel = "/chat";
         var ans='';
-
+<<<<<<< HEAD
+=======
+        var socket = io.connect('https://' + document.domain + ':' + location.port + channel);
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
         var mainurl='{{ messages['url'] }}';
         String.prototype.hashCode = function(){
             var hash = 0;
@@ -67,10 +70,14 @@
                         ts=obj['timestamp'];
                         
 
+
+
+                        
                     }
                     res+=str1+comment+str2+author+' on '+ts+str3;
                 }
                 $(".media-list").html(res);
+                
 
 
             }
@@ -78,32 +85,69 @@
  
         $(function(){
             console.log();
-            if (typeof $.cookie("realtime-chat-nickname") === 'undefined') {
-                window.location = "/login"
-            } else {
-                $("#sendMessage").on("click", function() {
-                    if($("#messageText").val()=="")
+            
+            $("#sendMessage").on("click", function() {
+                if($("#messageText").val()=="")
+                    alert( "Empty Comment field" );
+                else
+                    sendMessage()
+            });
+ 
+            $('#messageText').keyup(function(e){
+                if(e.keyCode == 13)
+                {   if($("#messageText").val()=="")
                         alert( "Empty Comment field" );
                     else
-                        sendMessage()
-                });
+                        sendMessage();
+                    
+                }
+            });
+        
+            window.setInterval(function(){
+             refreshm();
+                }, 1000);
  
-                $('#messageText').keyup(function(e){
-                    if(e.keyCode == 13)
-                    {   if($("#messageText").val()=="")
-                            alert( "Empty Comment field" );
-                        else
-                            sendMessage();
+            function sendMessage() {
+                $container = $('.media-list');
+                $container[0].scrollTop = $container[0].scrollHeight;
+                var message = $("#messageText").val();
+                var author = 'anonymous';
+                socket.emit('message', {data: {message: message, author: author}});
+                $("#messageText").val("");
+                $container.animate({ scrollTop: $container[0].scrollHeight }, "slow");
+                console.log(window.location.href);
+                var d = new Date();
+                var n=d.getTime();
+                console.log(n);
+                myFirebaseRef.push({
+                  comment: message,
+                  timestamp:n,
+                  author: author,
+                  
+                });
+                
+                //console.log(ans);
+                for (var key in ans) {
+                // skip loop if the property is from prototype
+                if (!ans.hasOwnProperty(key)) continue;
+                //console.log(obj[author]);
+                 var obj = ans[key];
+                 
+                    for (var prop in obj) {
+                    // skip loop if the property is from prototype
+                        if(!obj.hasOwnProperty(prop)) continue;
+
+                        // your code
+                        //console.log(obj['comment']);
+
                         
                     }
-                });
+                }
+                
+                
+                $('.fixed-panel').animate({scrollTop: $('.fixed-panel').prop("scrollHeight")}, 500);
             }
-            window.setInterval(function(){
-
-             refreshm();//The hackiest solution ever. FIX IT FUTURE RAGHAV. 
-
-                }, 1000);
-             function timeDifference(current, previous) {
+            function timeDifference(current, previous) {
 
                 var msPerMinute = 60 * 1000 * 2.1;
                 var msPerHour = msPerMinute * 60;
@@ -141,48 +185,6 @@
                 }
             }
             
-            function sendMessage() {
-
-                $container = $('.media-list');
-                $container[0].scrollTop = $container[0].scrollHeight;
-                var message = $("#messageText").val();
-                var author = $.cookie("realtime-chat-nickname");
-                socket.emit('message', {data: {message: message, author: author}});
-                $("#messageText").val("");
-                $container.animate({ scrollTop: $container[0].scrollHeight }, "slow");
-                console.log(window.location.href);
-                var d = new Date();
-                var n=d.getTime();
-                console.log(d);
-                myFirebaseRef.push({
-                  comment: message,
-                  timestamp:n,
-                  author: author,
-                  
-                });
-                
-                //console.log(ans);
-                for (var key in ans) {
-                // skip loop if the property is from prototype
-                if (!ans.hasOwnProperty(key)) continue;
-                //console.log(obj[author]);
-                 var obj = ans[key];
-                 
-                    for (var prop in obj) {
-                    // skip loop if the property is from prototype
-                        if(!obj.hasOwnProperty(prop)) continue;
-
-                        // your code
-                        //console.log(obj['comment']);
-
-                        
-                    }
-                }
-                
-                
-                $('.fixed-panel').animate({scrollTop: $('.fixed-panel').prop("scrollHeight")}, 500);
-            }
-            
             function refreshm() {
                 str1='<li class="media"><div class="media-body"><div class="media"><div class="media-body">';
                 str2='<br/><small class="text-muted">';
@@ -201,15 +203,16 @@
                 for (var key in ans) {
                 // skip loop if the property is from prototype
                 if (!ans.hasOwnProperty(key)) continue;
-                
+                //console.log(obj[author]);
                  var obj = ans[key];
                  
                     for (var prop in obj) {
                     // skip loop if the property is from prototype
                         if(!obj.hasOwnProperty(prop)) continue;
+
+                        // your code
                         var d = new Date();
                         var n=String(d);
-                        // your code
                         comment=obj['comment'];
                         author=obj['author'];
                         ts=obj['timestamp'];
@@ -220,7 +223,8 @@
 
                         
                     }
-                    res+=str1+strup+comment+strdown+str2+author+' | '+relative+str3;
+                    //res+=str1+strup+comment+strdown+str2+author+' | '+ts+str3;
+                    res+=str1+comment+str2+author+' | '+relative+str3;
 
                 }
                 $(".media-list").html(res);
@@ -236,7 +240,7 @@
     <style type="text/css">
         .fixed-panel {
             
-            height:75vh;
+            height:40vh;
             overflow: scroll;
         }
         .media-list {
@@ -258,9 +262,11 @@
         <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">
-
+<<<<<<< HEAD
                     <strong><span class="glyphicon glyphicon-list"></span> Comment History</strong>
-
+=======
+                    <strong><span class="glyphicon glyphicon-list"></span> Chat History</strong>
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
                 </div>
                 <div class="panel-body fixed-panel">
                     <ul class="media-list">

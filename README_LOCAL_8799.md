@@ -44,4 +44,4 @@ Credits to Zach Will's [Flask template](https://github.com/zachwill/flask_heroku
 
 Feel free to contribute or raise issues. 
 
-MIT License
+MIT License.

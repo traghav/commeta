@@ -12,7 +12,10 @@
     <script>
         var channel = "/chat";
         var ans='';
-
+<<<<<<< HEAD
+=======
+        var socket = io.connect('https://' + document.domain + ':' + location.port + channel);
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
         var mainurl='{{ messages['url'] }}';
         String.prototype.hashCode = function(){
             var hash = 0;
@@ -66,12 +69,22 @@
                         author=obj['author'];
                         ts=obj['timestamp'];
                         
+<<<<<<< HEAD
+=======
 
+
+
+                        
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
                     }
                     res+=str1+comment+str2+author+' on '+ts+str3;
                 }
                 $(".media-list").html(res);
+<<<<<<< HEAD
+=======
+                
 
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
 
             }
         
@@ -99,9 +112,11 @@
                 });
             }
             window.setInterval(function(){
-
+<<<<<<< HEAD
              refreshm();//The hackiest solution ever. FIX IT FUTURE RAGHAV. 
-
+=======
+             refreshm();
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
                 }, 1000);
              function timeDifference(current, previous) {
 
@@ -258,9 +273,11 @@
         <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">
-
+<<<<<<< HEAD
                     <strong><span class="glyphicon glyphicon-list"></span> Comment History</strong>
-
+=======
+                    <strong><span class="glyphicon glyphicon-list"></span> Chat History</strong>
+>>>>>>> 069e147ea20482c7ca2081de00b6bf6a37fd5426
                 </div>
                 <div class="panel-body fixed-panel">
                     <ul class="media-list">
